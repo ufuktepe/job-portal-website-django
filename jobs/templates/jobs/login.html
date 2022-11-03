@@ -1,0 +1,28 @@
+{% extends "jobs/layout.html" %}
+
+{% block body %}
+
+    <div class="main-area-container">
+        <div class="welcome-main">
+            {% comment %} Error message {% endcomment %}
+            {% if message %}
+                <div>{{ message }}</div>
+            {% endif %}
+
+            {% comment %} Login form {% endcomment %}
+            <form action="{% url 'login' %}" class="welcome-form" method="post">
+                {% csrf_token %}
+                <div class="form-input-container">
+                    <input autofocus class="form-input" type="text" name="username" placeholder="Username">
+                </div>
+                <div class="form-input-container">
+                    <input class="form-input" type="password" name="password" placeholder="Password">
+                </div>
+                <input class="btn btn-primary" type="submit" value="Login">
+            </form>
+        </div>
+    </div>
+
+
+
+{% endblock %}

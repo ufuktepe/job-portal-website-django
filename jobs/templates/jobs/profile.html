@@ -1,0 +1,71 @@
+{% extends "jobs/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <div class="main-area-container">
+        <div class="main-area">
+
+            <div class="container-generic">
+
+                {% comment %} Error message {% endcomment %}
+                {% if error_msg %}
+                    <div class="error-msg">
+                        {{ error_msg }}
+                    </div>
+                {% endif %}
+
+                <div id="display-mode">
+
+                    {% comment %} Company Name {% endcomment %}
+                    <div class="form-title-small">Company Name</div>
+                    {{ employer.company_name }}
+                    <hr>
+
+                    {% comment %} Number of Employees {% endcomment %}
+                    <div class="form-title-small">Number of Employees</div>
+                    {{ employer.num_of_employees }}
+                    <hr>
+
+                    {% comment %} Location {% endcomment %}
+                    <div class="form-title-small">Location</div>
+                    {{ employer.location }}
+                    <hr>
+
+                    {% comment %} About {% endcomment %}
+                    <div class="form-title-small">About</div>
+                    {{ employer.about }}
+
+                </div>
+
+                {% comment %} Edit form {% endcomment %}
+                <div id="edit-mode">
+                    {% if profile_owner %}
+                        <form action="{% url 'edit_profile' user_id=request.user.id %}" method="POST">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input type="submit" class="btn btn-primary">
+                        </form>
+                    {% endif %}
+                </div>
+
+                {% comment %} Edit link for displaying the edit form {% endcomment %}
+                <div class="btn-container-main">
+                    <a href="javascript:void(0)" class="btn btn-primary submit-btn" id="edit-link-profile">Edit</a>
+                </div>
+            </div>
+
+            {% if profile_owner %}
+                <div id="profile-owner" hidden></div>
+            {% endif %}
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'jobs/profile.js' %}"></script>
+{% endblock %}

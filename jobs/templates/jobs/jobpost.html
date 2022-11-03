@@ -1,0 +1,137 @@
+{% extends "jobs/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <div class="main-area-container">
+        {% comment %} Info message for inactive jobs {% endcomment %}
+        {% if not job_post.active %}
+            <div class="info-msg">
+                This job is no longer active
+            </div>
+        {% endif %}
+
+        <div class="main-area">
+            <div class="display-mode container-generic">
+                {% comment %} Company Name {% endcomment %}
+                <div class="display-title-xlarge">
+                    <a href="{% url 'display_profile' user_id=job_post.employer.profile.user.id%}">{{ job_post.employer.company_name }}</a>
+                </div>
+
+                {% comment %} Job Title {% endcomment %}
+                <div class="display-title-large">
+                    {{ job_post.title }}
+                </div>
+                <hr>
+
+                {% comment %} Job Type {% endcomment %}
+                <div class="display-title-small">
+                    {{ job_post.job_type }}
+                </div>
+
+                {% comment %} Location {% endcomment %}
+                <div class="display-title-small">
+                    {{ job_post.location }}
+                </div>
+
+                {% comment %} Salary {% endcomment %}
+                <div class="display-title-small">
+                    Pay: ${% widthratio job_post.min_salary 1000 1 %}K - ${% widthratio job_post.max_salary 1000 1 %}K
+                </div>
+
+                {% comment %} Number of Applicants{% endcomment %}
+                <div class="display-title-small" id="num-of-applicants">
+                    {% if applications %}
+                        Applicants: {{ applications.count }}
+                    {% else %}
+                        Applicants: 0
+                    {% endif %}
+                </div>
+                <hr>
+
+                {% comment %} Job Description {% endcomment %}
+                <div>
+                    <div class="display-title-large">Description</div>
+                    {{ job_post.description }}
+                </div>
+
+                {% comment %} Buttons {% endcomment %}
+                <div class="btn-container-main">
+
+                    {% if user.is_authenticated %}
+
+                        {% if user.profile.profile_type == "employer" %}
+
+                            {% if user.profile.employer == job_post.employer and job_post.active %}
+                                {% comment %} Edit and Close buttons {% endcomment %}
+                                <div class="btn-container-right">
+                                    <a href="{% url 'close_job_post' job_post_id=job_post.id %}" class="btn btn-danger"><div class="center-text">Close</div></a>
+                                </div>
+                                <div class="btn-container-right">
+                                    <button class="btn btn-primary" id="edit-button"><div class="center-text">Edit</div></button>
+                                </div>
+                            {% endif %}
+
+                        {% elif job_post.active %}
+
+                            {% if applied %}
+                                {% comment %} Cancel button {% endcomment %}
+                                <a href="javascript:void(0)" class="btn btn-danger application-btn" data-id={{ job_post.id }}><div class="center-text">Cancel Application</div></a>
+                            {% else %}
+                                {% comment %} Apply button {% endcomment %}
+                                <a href="javascript:void(0)" class="btn btn-success application-btn" data-id={{ job_post.id }}><div class="center-text">Apply</div></a>
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% elif job_post.active %}
+                        {% comment %} Login button {% endcomment %}
+                        <a href="{% url 'login' %}" class="login btn btn-primary submit-btn"><div class="center-text">Login to Apply</div></a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if show_edit_mode %}
+                <div id="show-edit-mode" hidden></div>
+            {% endif %}
+
+            {% comment %} Edit form section {% endcomment %}
+            <div class="edit-mode container-generic ">
+                {% comment %} Error message for the form {% endcomment %}
+                {% if error_msg %}
+                    <div class="error-msg">
+                        {{ error_msg }}
+                    </div>
+                {% endif %}
+
+                {% comment %} Edit form {% endcomment %}
+                <form action="{% url 'edit_job_post' job_post_id=job_post.id %}" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </form>
+            </div>
+        </div>
+
+        {% comment %} Applicants section for the job post owner {% endcomment %}
+        {% if user.is_authenticated and user.profile.profile_type == "employer" and job_post.employer == user.profile.employer%}
+            <div class="main-area">
+                <div class="container-generic">
+                    <div class="display-title-xlarge">Applicants</div>
+                    {% for application in applications %}
+                        <div>
+                            <a href="{% url 'resume' username=application.applicant.profile.user.username %}">{{ application.applicant.first_name }} {{ application.applicant.last_name }}</a>
+                        </div>
+                    {% empty %}
+                        No one has applied to this job yet.
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'jobs/jobpost.js' %}"></script>
+{% endblock %}

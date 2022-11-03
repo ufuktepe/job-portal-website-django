@@ -1,0 +1,86 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Job Portal{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel=”stylesheet” href=”css/bootstrap.css”>
+    <link rel=”stylesheet” href=”css/bootstrap-responsive.css”>
+    <link href="{% static 'jobs/styles.css' %}" rel="stylesheet">
+    {% block script %}
+    {% endblock %}
+</head>
+<body>
+
+{% comment %} Mobile responsive navigation bar {% endcomment %}
+<nav id="navbar_main" class="navbar navbar-expand-lg navbar-dark bg-primary top-menu">
+    <div class="container-fluid">
+        <ul class="navbar-nav">
+            {% comment %} All Jobs link {% endcomment %}
+            <li class="nav-item"> <a class="nav-link" href="{% url 'index' %}">All Jobs</a> </li>
+
+            {% if user.is_authenticated %}
+
+                {% comment %} Post Job link for the employer {% endcomment %}
+                {% if user.profile.profile_type == "employer" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post_job' %}">Post Job</a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <div class="dropdown">
+                        <a class="dropbtn nav-link" href="#">{{ user.username }}</a>
+                        <div class="dropdown-content">
+
+                            {% comment %} Job Seeker dropdown menu {% endcomment %}
+                            {% if user.profile.profile_type == "job_seeker" %}
+                                <a href="{% url 'resume' username=user.username %}">Resume</a>
+                                <a href="{% url 'applied_jobs' status='open' %}">Applied Jobs (Open)</a>
+                                <a href="{% url 'applied_jobs' status='closed' %}">Applied Jobs (Closed)</a>
+
+                            {% comment %} Employer dropdown menu {% endcomment %}
+                            {% elif user.profile.profile_type == "employer" %}
+                                <a href="{% url 'display_profile' user_id=request.user.id%}">Profile</a>
+                                <a href="{% url 'posted_jobs' status='open' %}">Posted Jobs (Open)</a>
+                                <a href="{% url 'posted_jobs' status='closed' %}">Posted Jobs (Closed)</a>
+                            {% endif %}
+
+                            {% comment %} Logout link {% endcomment %}
+                            <a href="{% url 'logout' %}">Log Out</a>
+                        </div>
+                    </div>
+                </li>
+
+            {% else %}
+                {% comment %} Login link {% endcomment %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                </li>
+
+                {% comment %} Register dropdown menu {% endcomment %}
+                <li class="nav-item">
+                    <div class="dropdown">
+                        <a class="dropbtn nav-link" href="#">Register</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'register' profile_type='job_seeker'%}">Job Seekers</a>
+                            <a href="{% url 'register' profile_type='employer'%}">Employers</a>
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+
+        </ul>
+    </div> <!-- container-fluid.// -->
+</nav>
+
+<div class="body">
+    {% block body %}
+    {% endblock %}
+</div>
+</body>
+</html>

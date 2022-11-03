@@ -1,0 +1,52 @@
+{% extends "jobs/layout.html" %}
+
+{% block body %}
+    <div class="main-area-container">
+        <div class="main-area">
+            <div class="container-generic">
+                {% comment %} Error message for the form {% endcomment %}
+                {% if error_msg %}
+                    <div class="error-msg">
+                        {{ error_msg }}
+                    </div>
+                {% endif %}
+
+                <form action="{% url 'post_job' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="post-job-form">
+
+                        {% comment %} Industry {% endcomment %}
+                        <div class="form-title-small">Industry</div>
+                        {{ form.industry }}
+
+                        {% comment %} Title {% endcomment %}
+                        <div class="form-title-small">Title</div>
+                        {{ form.title }}
+
+                        {% comment %} Job Type {% endcomment %}
+                        <div class="form-title-small">Job Type</div>
+                        {{ form.job_type }}
+
+                        {% comment %} Location {% endcomment %}
+                        <div class="form-title-small">Location</div>
+                        {{ form.location }}
+
+                        {% comment %} Min Salary {% endcomment %}
+                        <div class="form-title-small">Min Salary</div>
+                        {{ form.min_salary }}
+
+                        {% comment %} Max Salary {% endcomment %}
+                        <div class="form-title-small">Max Salary</div>
+                        {{ form.max_salary }}
+
+                        {% comment %} Description {% endcomment %}
+                        <div class="form-title-small">Description</div>
+                        {{ form.description }}
+
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Post Job">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

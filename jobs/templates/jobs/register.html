@@ -1,0 +1,57 @@
+{% extends "jobs/layout.html" %}
+
+{% block body %}
+
+    <div class="main-area-container">
+
+        <div class="welcome-main">
+            {% comment %} Title {% endcomment %}
+            {% if profile_type == "job_seeker" %}
+                <div class="main-title">Job Seeker Registration</div>
+            {% else %}
+                <div class="main-title">Employer Registration</div>
+            {% endif %}
+
+            {% comment %} Error message {% endcomment %}
+            {% if message %}
+                <div>{{ message }}</div>
+            {% endif %}
+
+            {% comment %} Register form {% endcomment %}
+            <form action="{% url 'register' profile_type=profile_type %}" class="welcome-form" method="post">
+                {% csrf_token %}
+                <div class="form-input-container">
+                    <input class="form-input" autofocus type="text" name="username" placeholder="Username">
+                </div>
+                <div class="form-input-container">
+                    <input class="form-input" type="password" name="password" placeholder="Password">
+                </div>
+                <div class="form-input-container">
+                    <input class="form-input" type="password" name="confirmation" placeholder="Confirm Password">
+                </div>
+
+                {% if profile_type == "job_seeker" %}
+                    <div class="form-input-container">
+                        <input class="form-input" type="text" name="first_name" placeholder="First Name">
+                    </div>
+                    <div class="form-input-container">
+                        <input class="form-input" type="text" name="last_name" placeholder="Last Name">
+                    </div>
+                {% else %}
+                    <div class="form-input-container">
+                        <input class="form-input" type="text" name="company_name" placeholder="Company Name">
+                    </div>
+                {% endif %}
+
+                <div class="form-input-container">
+                    <input class="form-input" type="email" name="email" placeholder="Email Address">
+                </div>
+
+                <input class="btn btn-primary" type="submit" value="Register">
+            </form>
+        </div>
+    </div>
+
+
+
+{% endblock %}

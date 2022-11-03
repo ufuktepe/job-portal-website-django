@@ -1,0 +1,434 @@
+{% extends "jobs/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="main-area-container">
+        <div class="main-area">
+
+            <h2 class="name-field">{{ resume.profile.jobseeker.first_name }} {{ resume.profile.jobseeker.last_name }}</h2>
+
+            {% comment %} Address section {% endcomment %}
+            <div class="container-generic"  data-id="address">
+                {% comment %} Address header area {% endcomment %}
+                <div class="form-header-area">
+                    <div class="form-title-large">Address</div>
+                    {% comment %} Edit link for editing the address {% endcomment %}
+                    <div class="form-link">
+                        <a href="javascript:void(0)" class="edit-link-resume btn btn-sm btn-outline-primary" data-id="address">Edit</a>
+                    </div>
+                </div>
+
+                {% comment %} Address content {% endcomment %}
+                <div class="display-mode-resume" data-id="address">
+                    <div class="content-resume" data-id="address">
+                        {% if resume.address %}
+                            {{ resume.address }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% comment %} Edit address form {% endcomment %}
+                <div class="edit-mode-resume" data-id="address">
+                    <form class="edit-form-resume" data-id="address">
+                        {% csrf_token %}
+                        <div>
+                            <textarea class="edit-textarea">{{ resume.address }}</textarea>
+                        </div>
+                        <input type="submit" class="btn btn-primary submit-btn">
+                    </form>
+                </div>
+            </div>
+            <hr>
+
+            {% comment %} Summary of Qualifications section {% endcomment %}
+            <div class="container-generic"  data-id="summary">
+                {% comment %} Summary of Qualifications header area {% endcomment %}
+                <div class="form-header-area">
+                    <div class="form-title-large">Summary of Qualifications</div>
+                    {% comment %} Edit link for editing the summary of qualifications {% endcomment %}
+                    <div class="form-link">
+                        <a href="javascript:void(0)" class="edit-link-resume btn btn-sm btn-outline-primary" data-id="summary">Edit</a>
+                    </div>
+                </div>
+
+                {% comment %} Summary of Qualifications content {% endcomment %}
+                <div class="display-mode-resume" data-id="summary">
+                    <div class="content-resume" data-id="summary">
+                        {% if resume.summary %}
+                            {{ resume.summary }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% comment %} Edit summary of qualifications form {% endcomment %}
+                <div class="edit-mode-resume" data-id="summary">
+                    <form class="edit-form-resume" data-id="summary">
+                        {% csrf_token %}
+                        <div>
+                            <textarea class="edit-textarea large-textarea" rows="3" cols="50">{{ resume.summary }}</textarea>
+                        </div>
+                        <input type="submit" class="btn btn-primary submit-btn">
+                    </form>
+                </div>
+            </div>
+            <hr>
+
+            {% comment %} Experience section {% endcomment %}
+            <div class="container-generic" id="experience-view">
+                {% comment %} Work Experience header {% endcomment %}
+                <div class="form-header-area">
+                    <div class="form-title-large">Work Experience</div>
+                    <div class="form-link">
+                        <a href="javascript:void(0)" class="add-link btn btn-sm btn-outline-primary" id="add-experience">Add</a>
+                    </div>
+                </div>
+
+                {% comment %} Add Experience form {% endcomment %}
+                <div class="add-mode-experience">
+                    {% comment %} Form error message {% endcomment %}
+                    {% if add_experience_error %}
+                        <div class="error-msg" id="add-mode-experience">{{ add_experience_error }}</div>
+                    {% endif %}
+                    <form action="{% url 'add_experience' %}" method="POST" class="add-form-experience" data-id="add-experience">
+                        {% csrf_token %}
+
+                        {% comment %} Job Title {% endcomment %}
+                        <div class="form-title-small">Job Title</div>
+                        <div>{{ add_experience_form.job_title }}</div>
+
+                        {% comment %} Company Name {% endcomment %}
+                        <div class="form-title-small">Company Name</div>
+                        <div>{{ add_experience_form.company_name }}</div>
+
+                        {% comment %} Location {% endcomment %}
+                        <div class="form-title-small">Location</div>
+                        <div>{{ add_experience_form.location }}</div>
+
+                        {% comment %} Start Date {% endcomment %}
+                        <div class="form-title-small">Start Date</div>
+                        <div class="date-field-edit-start">
+                            <div>{{ add_experience_form.start_month }}</div>
+                            <div>{{ add_experience_form.start_year }}</div>
+                        </div>
+
+                        {% comment %} End Date {% endcomment %}
+                        <div class="form-title-small">End Date</div>
+                        <div class="date-field-edit-end" data-id="add-experience">
+                            <div>{{ add_experience_form.end_month }}</div>
+                            <div>{{ add_experience_form.end_year }}</div>
+                            <div class="present-label">Present</div>
+                        </div>
+
+                        {% comment %} Current Job Checkbox {% endcomment %}
+                        <div class="checkbox-field" data-id="add-experience">{{ add_experience_form.current_job }} I currently work here</div>
+
+                        {% comment %} Job Description {% endcomment %}
+                        <div class="form-title-small">Description</div>
+                        <div>{{ add_experience_form.description }}</div>
+
+                        <input type="submit" class="btn btn-primary submit-btn">
+                    </form>
+                </div>
+
+                {% comment %} Loop through each work experience {% endcomment %}
+                {% for single_experience in experience %}
+                    <div class="container-item-experience"  data-id="exp{{ single_experience.id }}">
+
+                        {% comment %} Work Experience content {% endcomment %}
+                        <div class="display-mode-experience" data-id="exp{{ single_experience.id }}">
+
+                            {% comment %} Work Experience header area {% endcomment %}
+                            <div class="form-header-area">
+                                <div class="display-title-large" data-id="exp{{ single_experience.id }}">{{ single_experience.job_title }}</div>
+                                {% comment %} Remove and Edit links {% endcomment %}
+                                <div class="form-link">
+                                    <div class="btn-container-right">
+                                        <a href="javascript:void(0)" class="edit-link-experience btn btn-sm btn-outline-primary" data-id="exp{{ single_experience.id }}">Edit</a>
+                                    </div>
+                                    <div class="btn-container-right">
+                                        <a href="javascript:void(0)" class="remove-link-experience btn btn-sm btn-outline-primary" data-id="exp{{ single_experience.id }}">Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% comment %} Company Name {% endcomment %}
+                            <div class="display-title-medium" data-id="exp{{ single_experience.id }}">{{ single_experience.company_name }}</div>
+
+                            {% comment %} Date Area {% endcomment %}
+                            <div class="date-field-main display-title-small">
+                                <div class="display-start-month" data-id="exp{{ single_experience.id }}">{{ single_experience.start_month }}</div>
+                                <div>/</div>
+                                <div class="display-start-year" data-id="exp{{ single_experience.id }}">{{ single_experience.start_year }}</div>
+                                <div class="separator">-</div>
+                                <div class="date-field-display-end" data-id="exp{{ single_experience.id }}">
+                                    {% if single_experience.end_month %}
+                                        {{ single_experience.end_month }}/{{ single_experience.end_year }}
+                                    {% else %}
+                                        Present
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% comment %} Location {% endcomment %}
+                            <div class="display-title-small" data-id="exp{{ single_experience.id }}">{{ single_experience.location }}</div>
+
+                            {% comment %} Job Description {% endcomment %}
+                            <div class="content-experience" data-id="exp{{ single_experience.id }}">
+                                {{ single_experience.description }}
+                            </div>
+
+                        </div>
+
+                        {% comment %} Edit Work Experience form {% endcomment %}
+                        <div class="edit-mode-experience" data-id="exp{{ single_experience.id }}">
+
+                            <form class="edit-form-experience" data-id="exp{{ single_experience.id }}">
+                                {% csrf_token %}
+
+                                {% comment %} Form error message {% endcomment %}
+                                <span class="error-msg" data-id="exp{{ single_experience.id }}"></span>
+
+                                {% comment %} Job Title {% endcomment %}
+                                <div class="form-title-small">Job Title</div>
+                                <input type="text" class="edit-textarea" id="job-title" value="{{ single_experience.job_title }}">
+
+                                {% comment %} Company Name {% endcomment %}
+                                <div class="form-title-small">Company Name</div>
+                                <input type="text" class="edit-textarea" id="company-name" value="{{ single_experience.company_name }}">
+
+                                {% comment %} Location {% endcomment %}
+                                <div class="form-title-small">Location</div>
+                                <input type="text" class="edit-textarea" id="location" value="{{ single_experience.location }}">
+
+                                {% comment %} Start Date {% endcomment %}
+                                <div class="form-title-small">Start Date</div>
+                                <div class="date-field-edit-start">
+                                    <select class="month-field-start dropdown-field" data-id={{ single_experience.start_month }}>
+                                        <option value="">Month</option>
+                                    </select>
+                                    <select class="year-field-start dropdown-field" data-id={{ single_experience.start_year }}>
+                                        <option value="">Year</option>
+                                    </select>
+                                </div>
+
+                                {% comment %} End Date {% endcomment %}
+                                <div class="form-title-small">End Date</div>
+                                <div class="date-field-edit-end" data-id="exp{{ single_experience.id }}">
+                                    <select class="month-field-end dropdown-field" data-id={{ single_experience.end_month }}>
+                                        <option value="">Month</option>
+                                    </select>
+                                    <select class="year-field-end dropdown-field" data-id={{ single_experience.end_year }}>
+                                        <option value="">Year</option>
+                                    </select>
+                                    <div class="present-label">Present</div>
+                                </div>
+
+                                {% comment %} Current Job Checkbox {% endcomment %}
+                                <div class="checkbox-field" data-id="exp{{ single_experience.id }}">
+                                    {% if single_experience.current_job %}
+                                        <input type="checkbox" class="current-job-checkbox" id="exp{{ single_experience.id }}" data-id="exp{{ single_experience.id }}" checked>
+                                    {% else %}
+                                        <input type="checkbox" class="current-job-checkbox" id="exp{{ single_experience.id }}" data-id="exp{{ single_experience.id }}">
+                                    {% endif %}
+                                    <label for="exp{{ single_experience.id }}">I currently work here</label>
+                                </div>
+
+                                {% comment %} Job description {% endcomment %}
+                                <textarea rows="3" cols="50" class="edit-textarea">{{ single_experience.description }}</textarea>
+
+                                <input type="submit" class="btn btn-primary submit-btn">
+                            </form>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+            <hr>
+
+            {% comment %} Education section {% endcomment %}
+            <div class="container-generic" id="education-view">
+                {% comment %} Education header {% endcomment %}
+                <div class="form-header-area">
+                    <div class="form-title-large">Education</div>
+                    <div class="form-link">
+                        <a href="javascript:void(0)" class="add-link btn btn-sm btn-outline-primary" id="add-education">Add</a>
+                    </div>
+                </div>
+
+                {% comment %} Add Education form {% endcomment %}
+                <div class="add-mode-education">
+                    {% comment %} Form error message {% endcomment %}
+                    {% if add_education_error %}
+                        <div class="error-msg" id="add-mode-education">{{ add_education_error }}</div>
+                    {% endif %}
+                    <form action="{% url 'add_education' %}" method="POST" class="add-form-education" data-id="add-education">
+                        {% csrf_token %}
+
+                        {% comment %} School {% endcomment %}
+                        <div class="form-title-small">School</div>
+                        <div>{{ add_education_form.school }}</div>
+
+                        {% comment %} Degree {% endcomment %}
+                        <div class="form-title-small">Degree</div>
+                        <div>{{ add_education_form.degree }}</div>
+
+                        {% comment %} Field of Study {% endcomment %}
+                        <div class="form-title-small">Field of Study</div>
+                        <div>{{ add_education_form.field_of_study }}</div>
+
+                        {% comment %} Start Date {% endcomment %}
+                        <div class="form-title-small">Start Date</div>
+                        <div class="date-field-edit-start">
+                            <div>{{ add_education_form.start_month }}</div>
+                            <div>{{ add_education_form.start_year }}</div>
+                        </div>
+
+                        {% comment %} End Date {% endcomment %}
+                        <div class="form-title-small">End Date</div>
+                        <div class="date-field-edit-end" data-id="add-education">
+                            <div>{{ add_education_form.end_month }}</div>
+                            <div>{{ add_education_form.end_year }}</div>
+                        </div>
+
+                        <input type="submit" class="btn btn-primary submit-btn">
+                    </form>
+                </div>
+
+                {% comment %} Loop through each education {% endcomment %}
+                {% for single_education in education %}
+                    <div class="container-item-education"  data-id="edu{{ single_education.id }}">
+
+                        {% comment %} Education content {% endcomment %}
+                        <div class="display-mode-education" data-id="edu{{ single_education.id }}">
+
+                            {% comment %} Education header area {% endcomment %}
+                            <div class="form-header-area">
+                                <div class="content-education display-title-large" data-id="edu{{ single_education.id }}">{{ single_education.school }}</div>
+                                {% comment %} Remove and Edit links {% endcomment %}
+                                <div class="form-link">
+                                    <div class="btn-container-right">
+                                        <a href="javascript:void(0)" class="edit-link-education btn btn-sm btn-outline-primary" data-id="edu{{ single_education.id }}">Edit</a>
+                                    </div>
+                                    <div class="btn-container-right">
+                                        <a href="javascript:void(0)" class="remove-link-education btn btn-sm btn-outline-primary" data-id="edu{{ single_education.id }}">Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% comment %} Degree {% endcomment %}
+                            <div class="display-title-medium" data-id="edu{{ single_education.id }}">{{ single_education.degree }}</div>
+
+                            {% comment %} Field of Study {% endcomment %}
+                            <div class="display-title-small" data-id="edu{{ single_education.id }}">{{ single_education.field_of_study }}</div>
+
+                            {% comment %} Date Area {% endcomment %}
+                            <div class="date-field-main display-title-small">
+                                <div class="display-start-month" data-id="edu{{ single_education.id }}">{{ single_education.start_month }}</div>
+                                <div>/</div>
+                                <div class="display-start-year" data-id="edu{{ single_education.id }}">{{ single_education.start_year }}</div>
+                                <div class="separator">-</div>
+                                <div class="display-end-month" data-id="edu{{ single_education.id }}">{{ single_education.end_month }}</div>
+                                <div>/</div>
+                                <div class="display-end-year" data-id="edu{{ single_education.id }}">{{ single_education.end_year }}</div>
+                            </div>
+
+                        </div>
+
+                        {% comment %} Edit Education form {% endcomment %}
+                        <div class="edit-mode-education" data-id="edu{{ single_education.id }}">
+
+                            <form class="edit-form-education" data-id="edu{{ single_education.id }}">
+                                {% csrf_token %}
+
+                                {% comment %} Form error message {% endcomment %}
+                                <span class="error-msg" data-id="edu{{ single_education.id }}"></span>
+
+                                {% comment %} School {% endcomment %}
+                                <div class="form-title-small">School</div>
+                                <input type="text" class="edit-textarea" id="school" value="{{ single_education.school }}">
+
+                                {% comment %} Degree {% endcomment %}
+                                <div class="form-title-small">Degree</div>
+                                <select class="degree-field dropdown-field edit-textarea" id="degree" data-id="{{ single_education.degree }}">
+                                    <option value=""></option>
+                                </select>
+
+                                {% comment %} Field of Study {% endcomment %}
+                                <div class="form-title-small">Location</div>
+                                <input type="text" class="edit-textarea" id="field-of-study" value="{{ single_education.field_of_study }}">
+
+                                {% comment %} Start Date {% endcomment %}
+                                <div class="form-title-small">Start Date</div>
+                                <div class="date-field-edit-start">
+                                    <select class="month-field-start dropdown-field" data-id={{ single_education.start_month }}>
+                                        <option value="">Month</option>
+                                    </select>
+                                    <select class="year-field-start dropdown-field" data-id={{ single_education.start_year }}>
+                                        <option value="">Year</option>
+                                    </select>
+                                </div>
+
+                                {% comment %} End Date {% endcomment %}
+                                <div class="form-title-small">End Date</div>
+                                <div class="date-field-edit-end" data-id="edu{{ single_education.id }}">
+                                    <select class="month-field-end dropdown-field" data-id={{ single_education.end_month }}>
+                                        <option value="">Month</option>
+                                    </select>
+                                    <select class="year-field-end dropdown-field" data-id={{ single_education.end_year }}>
+                                        <option value="">Year</option>
+                                    </select>
+                                </div>
+
+                                <input type="submit" class="btn btn-primary submit-btn">
+                            </form>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+            <hr>
+
+            {% comment %} Skills section {% endcomment %}
+            <div class="container-generic"  data-id="skills">
+                {% comment %} Skills header area {% endcomment %}
+                <div class="form-header-area">
+                    <div class="form-title-large">Skills</div>
+                    {% comment %} Edit link for editing the skills {% endcomment %}
+                    <div class="form-link">
+                        <a href="javascript:void(0)" class="edit-link-resume btn btn-sm btn-outline-primary" data-id="skills">Edit</a>
+                    </div>
+                </div>
+
+                {% comment %} Skills content {% endcomment %}
+                <div class="display-mode-resume" data-id="skills">
+                    <div class="content-resume" data-id="skills">
+                        {% if resume.skills %}
+                            {{ resume.skills }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% comment %} Edit skills form {% endcomment %}
+                <div class="edit-mode-resume" data-id="skills">
+                    <form class="edit-form-resume" data-id="skills">
+                        {% csrf_token %}
+                        <div>
+                            <textarea class="edit-textarea large-textarea" rows="3" cols="50">{{ resume.skills }}</textarea>
+                        </div>
+                        <input type="submit" class="btn btn-primary submit-btn">
+                    </form>
+                </div>
+            </div>
+
+            {% if resume_owner %}
+                <div id="resume-owner" hidden></div>
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'jobs/resume.js' %}"></script>
+{% endblock %}

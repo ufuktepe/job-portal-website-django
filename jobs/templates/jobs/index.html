@@ -1,0 +1,33 @@
+{% extends "jobs/layout.html" %}
+
+{% block body %}
+
+    {% comment %} Search Area {% endcomment %}
+    <div class="search-area">
+        <div class="main-title">FIND YOUR DREAM JOB</div>
+        <div class="search-bar-outer">
+            <form action="{% url 'search' %}">
+                <div class="search-bar-mid">
+                    <input class="search-bar-inner" type="text" name="q" placeholder="Job Title or Keyword">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% comment %} Loop through and display each job post {% endcomment %}
+    {% for job_post in job_posts %}
+        <div class="job-post">
+            <div>
+                <div class="display-title-large">
+                    <a href="{% url 'display_job_post' job_post_id=job_post.id %}">{{ job_post.title }}</a>
+                </div>
+                <div class="display-title-medium">{{ job_post.employer.company_name }}</div>
+                <div class="display-title-small">{{ job_post.location }}</div>
+                <div class="display-title-small">
+                    ${% widthratio job_post.min_salary 1000 1 %}K - ${% widthratio job_post.max_salary 1000 1 %}K
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
